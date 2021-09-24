@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="res_partner_form_view_inherit" model="ir.ui.view">
+            <field name="name">res.partner.form.view.inherit</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='vat']" position="after">
+                    <field name="customer_discount_code" groups="test1.group_advanced_sale"/>
+                    <field name="valid_code" invisible="1"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="res_partner_tree_view_inherit" model="ir.ui.view">
+            <field name="name">res.partner.tree.view.inherit</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='display_name']" position="after">
+                    <field name="customer_discount_code" groups="test1.group_advanced_sale"/>
+                    <field name="valid_code" invisible="1"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="filter_valid_customer_code_action" model="ir.actions.act_window">
+            <field name="name">Valid Customers Code</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">res.partner</field>
+            <field name="domain">[('valid_code', '=', True)]</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem id="valid_customer_code" name="Customers Have Valid Code" parent="sale.sale_menu_root"
+                  action="filter_valid_customer_code_action" sequence="6"/>
+
+        <record id="quotation_form_view_inherit" model="ir.ui.view">
+            <field name="name">quotation.form.view.inherit</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='partner_id']" position="after">
+                    <field name="customer_discount_code"/>
+                </xpath>
+                <xpath expr="//field[@name='payment_term_id']" position="after">
+                    <field name="discount_estimated"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="quotation_tree_view_inherit" model="ir.ui.view">
+            <field name="name">quotation.tree.view.inherit</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_quotation_tree_with_onboarding"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='name']" position="after">
+                    <field name="customer_discount_code"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="sale_order_tree_view_inherit" model="ir.ui.view">
+            <field name="name">sale.order.tree.view.inherit</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='name']" position="after">
+                    <field name="customer_discount_code"/>
+                </xpath>
+            </field>
+        </record>
+
+
+        <record id="special_customer_filter" model="ir.ui.view">
+            <field name="name">special.customer.filter</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_sales_order_filter"/>
+            <field name="arch" type="xml">
+                <xpath expr="//filter[@name='my_sale_orders_filter']" position="after">
+                    <separator/>
+                    <filter string="Special Customer" name="valid_code"
+                            domain="[('valid_code','=',True)]"/>
+                    <separator/>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</odoo>
